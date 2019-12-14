@@ -11,24 +11,25 @@
 
 using namespace std;
 
+//base class for all characters in the game
 class Character
 {
 private:
+	//private data members to hold character name, class, combat vectors, level, hit, block, health, max health, attack rating and defense rating
 	string character_name;
 	string character_class;
 	vector<int> character_vec;
 	vector<int> def_vec;
-	vector<int> aoe_vec;
 	vector<int> charged_vec;
-	vector<string> inventory;
-	vector<string> equipment;
 	int character_level;
 	int character_hit;
 	int character_block;
 	int character_health;
+	int character_max_health;
 	float attack_rating;
 	float defense_rating;
 public:
+	//constructor for character class
 	Character(string name, string class_type, int level)
 	{
 		character_name = name;
@@ -37,12 +38,14 @@ public:
 		character_hit = 0;
 		character_block = 0;
 		character_health = 0;
+		character_max_health = 0;
 		attack_rating = 0;
 		defense_rating = 0;
 
-		setUp();
+		fillVectors();
 	}
 
+	//setters and getters for private data members
 	string getName()
 	{
 		return character_name;
@@ -78,6 +81,18 @@ public:
 		return character_hit;
 	}
 
+	int getNewBalancedHit(int i)
+	{
+		character_hit = character_vec[i] * attack_rating;
+		return character_hit;
+	}
+
+	int getNewChargedHit(int i)
+	{
+		character_hit = charged_vec[i] * attack_rating;
+		return character_hit;
+	}
+
 	void setHit(int i)
 	{
 		character_hit = i;
@@ -85,6 +100,12 @@ public:
 
 	int getBlock()
 	{
+		return character_block;
+	}
+
+	int getNewBlock(int i)
+	{
+		character_block = def_vec[i] * defense_rating;
 		return character_block;
 	}
 
@@ -98,9 +119,19 @@ public:
 		return character_health;
 	}
 
+	int getMaxHealth()
+	{
+		return character_max_health;
+	}
+
 	void setHealth(int i)
 	{
 		character_health = i;
+	}
+
+	void setMaxHealth(int i)
+	{
+		character_max_health = i;
 	}
 
 	float getAttackRating()
@@ -123,61 +154,12 @@ public:
 		defense_rating = f;
 	}
 
-	void setUp()
+	//fills the combat vectors with values so that a RNG value can determine the hit or block during combat phase
+	void fillVectors()
 	{
 		character_vec.resize(100);
 		def_vec.resize(100);
-		aoe_vec.resize(100);
 		charged_vec.resize(100);
-		equipment.resize(10);
-		inventory.resize(20);
-
-		int i = 0;
-		while (i < (inventory.size()))
-		{
-			inventory[i] = "empty";
-			i++;
-		}
-
-		if (character_class == "knight")
-		{
-			character_class = "knight";
-			character_health = 12;
-			attack_rating = 1.2;
-			defense_rating = 1.2;
-			equipment[0] = "Iron Helmet";
-			equipment[1] = "Iron Platebody";
-			equipment[2] = "Iron Platelegs";
-			equipment[3] = "Iron Boots";
-			equipment[4] = "Iron Gauntlets";
-			equipment[5] = "Iron Sword";
-			equipment[6] = "Iron Shield";
-			equipment[7] = "empty";
-			equipment[8] = "empty";
-			equipment[9] = "empty";
-		}
-
-		else if (character_class == "mage")
-		{
-			character_class = "mage";
-			character_health = 10;
-			attack_rating = 1.5;
-			defense_rating = 1;
-			equipment[0] = "Mage Hood";
-			equipment[1] = "Mage Robetop";
-			equipment[2] = "Mage Robebottom";
-			equipment[3] = "Mage Boots";
-			equipment[4] = "Mage Gloves";
-			equipment[5] = "Battlestaff";
-			equipment[6] = "empty";
-			equipment[7] = "empty";
-			equipment[8] = "empty";
-			equipment[9] = "empty";
-		}
-	}
-
-	void fillVectors(int mult)
-	{
 		int i = 0;
 		while (i < (character_vec.size()))
 		{
@@ -236,37 +218,6 @@ public:
 			else if (i < 100)
 			{
 				def_vec[i] = 1;
-			}
-			i++;
-		}
-
-		i = 0;
-
-		while (i < (aoe_vec.size()))
-		{
-			if (i < 20)
-			{
-				aoe_vec[i] = 0;
-			}
-
-			else if (i < 60)
-			{
-				aoe_vec[i] = 1;
-			}
-
-			else if (i < 90)
-			{
-				aoe_vec[i] = 2;
-			}
-
-			else if (i < 99)
-			{
-				aoe_vec[i] = 3;
-			}
-
-			else if (i == 99)
-			{
-				aoe_vec[i] = 4;
 			}
 			i++;
 		}
